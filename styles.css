@@ -1,0 +1,371 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* background-color: #1e1e1e; */
+    background: radial-gradient(circle, rgba(13,13,38,1) 0%, rgba(39,29,98,1) 35%, rgba(0,0,0,1) 100%);
+    color: #ffffff;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameContainer {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    padding: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+h1 {
+    margin-bottom: 10px;
+    color: #61dafb;
+    text-shadow: 2px 2px #000;
+}
+
+#gameStatus {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    min-height: 1.5em;
+}
+
+/* Game Board Styles */
+#boardContainer {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+}
+
+#entanglements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 320px;
+    pointer-events: none;
+    z-index: 2; /* Bring lines above the grid */
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.cell {
+    background-color: #3e444e;
+    border: 2px solid #61dafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s, transform 0.3s;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.cell:hover {
+    background-color: #4a5363;
+}
+
+.cell.occupied {
+    cursor: not-allowed;
+    transition: transform 0.3s;
+}
+
+.cell.X {
+    color: #e63946;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.cell.O {
+    color: #1d3557;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Quantum State Animation */
+.cell.quantum {
+    background: linear-gradient(45deg, #555, #777, #555);
+    background-size: 400% 400%;
+    animation: quantumPulse 0.25s ease infinite;
+    position: relative;
+}
+
+.cell.quantum::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: transparent;
+    pointer-events: none;
+}
+
+@keyframes quantumPulse {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Entanglement Indicators */
+.entanglement {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    z-index: 3; /* Ensure indicators are above lines */
+}
+
+/* Controls Styles */
+#controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #61dafb;
+    color: #000;
+    transition: background-color 0.3s, transform 0.2s;
+    /* box-shadow: 0 4px #3e8e41; */
+}
+
+button:hover {
+    background-color: #21a1f1;
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #21a1f1;
+    box-shadow: 0 2px #8846f9;
+    transform: translateY(2px);
+}
+
+button:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Message Styles */
+#message {
+    margin-top: 20px;
+    font-size: 1.4em; /* Increased font size */
+    min-height: 70px;
+    padding: 10px; /* Added padding */
+    background-color: #444; /* Subtle background color */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 0px 10px #61dafb; /* Subtle glow effect */
+    transition: all 0.3s ease-in-out; /* Smooth transition */
+}
+
+/* SVG Entanglement Lines */
+#entanglements svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 320px;
+    pointer-events: none;
+    z-index: 2; /* Above the grid */
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes lineDraw {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+}
+
+/* Highlight for Reversals */
+.highlight {
+    animation: highlightFlash 0.5s ease-in-out;
+}
+
+@keyframes highlightFlash {
+    0% { box-shadow: 0 0 10px 5px yellow; }
+    100% { box-shadow: none; }
+}
+
+/* Curved Lines Styles */
+.entanglement-line {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: lineDraw 1.5s forwards;
+    filter: url(#glow);
+}
+
+/* Define glow effect */
+svg defs {
+    filter: url(#glow);
+}
+
+/* Responsive Design */
+@media (max-width: 400px) {
+    #boardContainer {
+        width: 280px;
+        height: 280px;
+    }
+
+    #board {
+        grid-template-columns: repeat(3, 80px);
+        grid-template-rows: repeat(3, 80px);
+        gap: 5px;
+    }
+
+    .cell {
+        font-size: 2.5em;
+    }
+
+    #entanglements {
+        width: 280px;
+        height: 280px;
+    }
+}
+
+/* Modal Styles */
+.rules-modal {
+    display: flex; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    /* background-color: rgba(0,0,0,0.7); Black w/ opacity */
+    background: radial-gradient(circle, rgba(13,13,38,1) 0%, rgba(39,29,98,1) 35%, rgba(0,0,0,1) 100%);
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.sound-modal {
+    display: flex; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    /* background-color: rgba(0,0,0,0.7); Black w/ opacity */
+    background: radial-gradient(circle, rgba(13,13,38,1) 0%, rgba(39,29,98,1) 35%, rgba(0,0,0,1) 100%);
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+
+.rules-modal-content {
+    background-color: #2c2c2c;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    color: #fff;
+    position: relative;
+}
+
+.sound-modal-content {
+    background-color: #2c2c2c;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    color: #fff;
+    position: relative;
+    text-align: center; /* Center text and inline content */
+    display: flex; /* Enable flexbox layout */
+    justify-content: center; /* Center children horizontally */
+    align-items: center; /* Center children vertically */
+    flex-direction: column; /* Stack children vertically */
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Rules Button */
+#rulesButton {
+    background-color: #ffcc00;
+    color: #000;
+}
+
+#rulesButton:hover {
+    background-color: #e6b800;
+}
+
+button#playInitialMusicButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+button#playInitialMusicButton img {
+    width: 50px;
+    height: auto;
+}
+#playMusicButton {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 20; /* Make sure it's above other content */
+    display: none; /* Start hidden and show after sound is enabled */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+
+#playMusicButton img {
+    width: 30px; /* Smaller icon after the modal is closed */
+    height: auto;
+}

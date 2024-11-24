@@ -184,7 +184,7 @@
         #message {
             margin-top: 20px;
             font-size: 1.4em; /* Increased font size */
-            min-height: 1.4em;
+            min-height: 70px;
             padding: 10px; /* Added padding */
             background-color: #444; /* Subtle background color */
             border-radius: 5px; /* Rounded corners */
@@ -380,10 +380,17 @@
 </head>
 <body>
     <audio id="backgroundMusic" loop>
-        <source src="audio.mp3" type="audio/mpeg">
+        <source src="assets/audio.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-
+    <audio id="quantumMoveSound">
+        <source src="assets/shock.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio id="classicalMoveSound">
+        <source src="assets/electron.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <div id="gameContainer">
         <h1>Quantum Tic-Tac-Toe</h1>
         <div id="gameStatus">Player X's Turn</div>
@@ -469,14 +476,14 @@
         <div class="sound-modal-content">
             <h2>Enable sound to enjoy the best user experience.</p>
             <button id="playInitialMusicButton">
-                <img src="loudspeaker_strike.png" alt="Play Music">
+                <img src="assets/loudspeaker_strike.png" alt="Play Music">
             </button>
         </div>
     </div>
 
     <button id="playMusicButton" style="display: none;">
-        <img src="loudspeaker_strike.png" alt="Play Music" id="playIcon" style="display: none">
-        <img src="loudspeaker.png" alt="Pause Music" id="pauseIcon" style="display: block">
+        <img src="assets/loudspeaker_strike.png" alt="Play Music" id="playIcon" style="display: none">
+        <img src="assets/loudspeaker.png" alt="Pause Music" id="pauseIcon" style="display: block">
     </button>
 
     <script>
@@ -497,7 +504,7 @@
         }));
         let currentPlayer = PLAYER_X;
         let selectedMove = null; // For quantum moves
-        let message = '';
+        let message = '\n\n';
         let addedEventListener = null;
 
         // DOM Elements
@@ -513,6 +520,8 @@
         const entanglementsSVG = document.getElementById('entanglements');
         const playIcon = document.getElementById('playIcon');
         const pauseIcon = document.getElementById('pauseIcon');
+        const quantumMoveSound = document.getElementById('quantumMoveSound');
+        const classicalMoveSound = document.getElementById('classicalMoveSound');
 
         // Modal Elements
         const rulesModal = document.getElementById("rulesModal");
@@ -663,6 +672,7 @@
             const index = parseInt(event.target.getAttribute('data-index'));
             console.log(index);
             performMove(index);
+            classicalMoveSound.play();
             // Remove this event listener after selection
             cells.forEach(cell => cell.removeEventListener('click', selectClassical));
             addedEventListener = null;
@@ -787,6 +797,7 @@
             // Create entanglement
             board[targetBox].entangledWith = controlBox;
             message = `You successfully entangled box ${controlBox +1} with box ${targetBox +1}. Beware of your (and your opponents') actions now.`;
+            quantumMoveSound.play();
             // Animate the entanglement creation
             // Yields the entanglement lines through render()
             // Remove event listener for target selection

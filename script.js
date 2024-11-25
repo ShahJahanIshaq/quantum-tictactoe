@@ -1,71 +1,101 @@
 // Game States
 const EMPTY = null;
-const PLAYER_X = 'X';
-const PLAYER_O = 'O';
+const PLAYER_X = "X";
+const PLAYER_O = "O";
 
 // Quantum States
-const Q_ZERO = '0';
-const Q_ONE = '1';
+const Q_ZERO = "0";
+const Q_ONE = "1";
 
 // Initialize Game Variables
-let board = Array(9).fill(EMPTY).map(() => ({
-    state: 'quantum',    // 'quantum' or 'classical'
-    value: EMPTY,        // 'X', 'O', or EMPTY
-    entangledWith: null  // Index of entangled control box
-}));
+let board = Array(9)
+    .fill(EMPTY)
+    .map(() => ({
+        state: "quantum", // 'quantum' or 'classical'
+        value: EMPTY, // 'X', 'O', or EMPTY
+        entangledWith: null, // Index of entangled control box
+    }));
 let currentPlayer = PLAYER_X;
 let selectedMove = null; // For quantum moves
-let message = '\n\n';
+let message = "\n\n";
 let addedEventListener = null;
 
 // DOM Elements
-const cells = document.querySelectorAll('.cell');
-const gameStatus = document.getElementById('gameStatus');
-const classicalButton = document.getElementById('classicalMove');
-const quantumButton = document.getElementById('quantumMove');
-const resetButton = document.getElementById('reset');
-const rulesButton = document.getElementById('rulesButton');
-const musicToggle = document.getElementById('playMusicButton');
-const backgroundMusic = document.getElementById('backgroundMusic');
-const messageDiv = document.getElementById('message');
-const entanglementsSVG = document.getElementById('entanglements');
-const playIcon = document.getElementById('playIcon');
-const pauseIcon = document.getElementById('pauseIcon');
-const quantumMoveSound = document.getElementById('quantumMoveSound');
+const cells = document.querySelectorAll(".cell");
+const gameStatus = document.getElementById("gameStatus");
+const classicalButton = document.getElementById("classicalMove");
+const quantumButton = document.getElementById("quantumMove");
+const resetButton = document.getElementById("reset");
+const rulesButton = document.getElementById("rulesButton");
+const musicToggle = document.getElementById("playMusicButton");
+const backgroundMusic = document.getElementById("backgroundMusic");
+const messageDiv = document.getElementById("message");
+const entanglementsSVG = document.getElementById("entanglements");
+const playIcon = document.getElementById("playIcon");
+const pauseIcon = document.getElementById("pauseIcon");
+const quantumMoveSound = document.getElementById("quantumMoveSound");
 
 // Modal Elements
 const rulesModal = document.getElementById("rulesModal");
 const span = document.getElementsByClassName("close")[0];
-const soundModal = document.getElementById('soundPromptModal');
-const initialMusicButton = document.getElementById('playInitialMusicButton');
+const soundModal = document.getElementById("soundPromptModal");
+const initialMusicButton = document.getElementById("playInitialMusicButton");
+
+// DOM Elements for Tutorial
+const tutorialModal = document.getElementById("tutorialModal");
+const tutorialMessage = document.getElementById("tutorialMessage");
+const tutorialNext = document.getElementById("tutorialNext");
+const tutorialClose = document.querySelector(".tutorial-close");
+
+// === Tutorial Steps Definition ===
+const tutorialSteps = [
+    {
+        element: "#board",
+        message:
+            "This is the game grid where you place your moves. It consists of 9 cells arranged in a 3x3 grid.",
+    },
+    {
+        element: "#classicalMove",
+        message:
+            'The "Classical Move" button allows you to collapse a quantum state into either "X" or "O" randomly.',
+    },
+    {
+        element: "#quantumMove",
+        message:
+            'The "Quantum Move" button lets you entangle a quantum state with a classical state, adding complexity to your strategy.',
+    },
+    {
+        element: "#message",
+        message:
+            "This area displays important game messages, updates, and notifications.",
+    },
+    {
+        element: "#rulesButton",
+        message:
+            'Clicking the "Rules" button will show you the detailed rules of Quantum Tic-Tac-Toe.',
+    },
+];
+
+let currentTutorialStep = 0;
 
 // Render Function
 function render() {
     cells.forEach((cell, index) => {
         const cellData = board[index];
-        cell.classList.remove('occupied', 'X', 'O', 'highlight', 'quantum');
-        cell.style.backgroundColor = '#3e444e';
-        cell.innerHTML = '';
+        cell.classList.remove("occupied", "X", "O", "highlight", "quantum");
+        cell.style.backgroundColor = "#3e444e";
+        cell.innerHTML = "";
 
-        if (cellData.state === 'classical') {
-            cell.classList.add('occupied');
+        if (cellData.state === "classical") {
+            cell.classList.add("occupied");
             cell.classList.add(cellData.value);
             cell.textContent = cellData.value;
             // Apply color based on player
-            cell.style.backgroundColor = '#ffffff'
+            cell.style.backgroundColor = "#ffffff";
         } else {
             // Quantum state animation
-            cell.classList.add('quantum');
+            cell.classList.add("quantum");
         }
-
-        // Show entanglement if any
-        // if (cellData.entangledWith !== null) {
-        //     const entDiv = document.createElement('div');
-        //     entDiv.classList.add('entanglement');
-        //     entDiv.textContent = `E:${cellData.entangledWith +1}`;
-        //     entDiv.style.fontSize = 1;
-        //     cell.appendChild(entDiv);
-        // }
     });
 
     // Clear and redraw entanglement lines
@@ -78,8 +108,8 @@ function render() {
 // Draw Entanglements using SVG Paths with Curves
 function drawEntanglements() {
     // Clear existing lines
-    const existingLines = entanglementsSVG.querySelectorAll('.entanglement-line');
-    existingLines.forEach(line => line.remove());
+    const existingLines = entanglementsSVG.querySelectorAll(".entanglement-line");
+    existingLines.forEach((line) => line.remove());
 
     board.forEach((cell, index) => {
         if (cell.entangledWith !== null) {
@@ -101,7 +131,7 @@ function drawCurvedLine(fromIndex, toIndex, player) {
         const col = idx % 3;
         return {
             x: col * (cellSize + gap) + cellSize / 2,
-            y: row * (cellSize + gap) + cellSize / 2
+            y: row * (cellSize + gap) + cellSize / 2,
         };
     };
 
@@ -124,16 +154,19 @@ function drawCurvedLine(fromIndex, toIndex, player) {
 
     // Create SVG path
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute('d', `M ${fromPos.x} ${fromPos.y} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${toPos.x} ${toPos.y}`);
-    path.classList.add('entanglement-line');
+    path.setAttribute(
+        "d",
+        `M ${fromPos.x} ${fromPos.y} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${toPos.x} ${toPos.y}`
+    );
+    path.classList.add("entanglement-line");
 
     // Set color based on player
     if (player === PLAYER_X) {
-        path.style.stroke = '#e63946'; // Red for X
+        path.style.stroke = "#e63946"; // Red for X
     } else if (player === PLAYER_O) {
-        path.style.stroke = '#1d3557'; // Blue for O
+        path.style.stroke = "#1d3557"; // Blue for O
     }
-    path.style.stroke = '#fedd56';
+    path.style.stroke = "#fedd56";
 
     entanglementsSVG.appendChild(path);
 }
@@ -141,64 +174,70 @@ function drawCurvedLine(fromIndex, toIndex, player) {
 // Check Win Condition
 function checkWin() {
     const winPatterns = [
-        [0,1,2],
-        [3,4,5],
-        [6,7,8],
-        [0,3,6],
-        [1,4,7],
-        [2,5,8],
-        [0,4,8],
-        [2,4,6]
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
     ];
     for (let pattern of winPatterns) {
         const [a, b, c] = pattern;
-        if (board[a].state === 'classical' && board[b].state === 'classical' && board[c].state === 'classical') {
-            if (board[a].value === board[b].value && board[b].value === board[c].value && board[a].value !== EMPTY) {
+        if (
+            board[a].state === "classical" &&
+            board[b].state === "classical" &&
+            board[c].state === "classical"
+        ) {
+            if (
+                board[a].value === board[b].value &&
+                board[b].value === board[c].value &&
+                board[a].value !== EMPTY
+            ) {
                 return board[a].value;
             }
         }
     }
     // Check for draw
-    if (board.every(cell => cell.state === 'classical')) {
-        return 'Draw';
+    if (board.every((cell) => cell.state === "classical")) {
+        return "Draw";
     }
     return null;
 }
 
 // Handle Classical Move
 function handleClassicalMove(index) {
-    cells.forEach(cell => cell.removeEventListener('click', selectControl));
-    cells.forEach(cell => cell.removeEventListener('click', selectTarget));
+    cells.forEach((cell) => cell.removeEventListener("click", selectControl));
+    cells.forEach((cell) => cell.removeEventListener("click", selectTarget));
     unhighlightAll();
 
-    message = 'Select a box to perform Classical Move.';
+    message = "Select a box to perform Classical Move.";
     render();
 
     addedEventListener = 0;
-    cells.forEach(cell => cell.addEventListener('click', selectClassical));
+    cells.forEach((cell) => cell.addEventListener("click", selectClassical));
 }
 
 function selectClassical(event) {
-    const index = parseInt(event.target.getAttribute('data-index'));
-    console.log(index);
+    const index = parseInt(event.target.getAttribute("data-index"));
     performMove(index);
     // Remove this event listener after selection
-    cells.forEach(cell => cell.removeEventListener('click', selectClassical));
+    cells.forEach((cell) => cell.removeEventListener("click", selectClassical));
     addedEventListener = null;
-    console.log("classical listener removed");
 }
 
 function performMove(index) {
     const cellData = board[index];
     cell = cells[index];
-    if (cellData.state !== 'quantum') {
-        message = 'Classical move can only be applied to a quantum state box.';
+    if (cellData.state !== "quantum") {
+        message = "Classical move can only be applied to a quantum state box.";
         render();
         return;
     }
     // Collapse the quantum state
     const collapse = Math.random() < 0.5 ? Q_ZERO : Q_ONE;
-    cellData.state = 'classical';
+    cellData.state = "classical";
     if (collapse === Q_ZERO) {
         cellData.value = PLAYER_O;
     } else {
@@ -206,7 +245,7 @@ function performMove(index) {
     }
 
     // Remove 'quantum' class to stop animation
-    cell.classList.remove('quantum');
+    cell.classList.remove("quantum");
 
     // Adding fade-in animation by re-rendering
     render();
@@ -214,35 +253,40 @@ function performMove(index) {
     // Handle entanglements
     let measuredEntangled = false;
     board.forEach((c, idx) => {
-        if (c.entangledWith === index && c.state === 'classical') {
-            const favoredState = (currentPlayer === PLAYER_X) ? Q_ONE : Q_ZERO;
-            if ((currentPlayer === PLAYER_X && collapse === Q_ONE) ||
-                (currentPlayer === PLAYER_O && collapse === Q_ZERO)) {
+        if (c.entangledWith === index && c.state === "classical") {
+            const favoredState = currentPlayer === PLAYER_X ? Q_ONE : Q_ZERO;
+            if (
+                (currentPlayer === PLAYER_X && collapse === Q_ONE) ||
+                (currentPlayer === PLAYER_O && collapse === Q_ZERO)
+            ) {
                 // Reverse the state
-                c.value = (c.value === PLAYER_X) ? PLAYER_O : PLAYER_X;
-                message = "You measured an entangled particle. And it is in your favor. REVERSAL!"
+                c.value = c.value === PLAYER_X ? PLAYER_O : PLAYER_X;
+                message =
+                    "You measured an entangled box. Something ~spooky~ happened to the other entangled box. REVERSAL!";
                 // Add highlight animation
                 const targetCell = cells[idx];
-                targetCell.classList.add('highlight');
+                targetCell.classList.add("highlight");
                 setTimeout(() => {
-                    targetCell.classList.remove('highlight');
+                    targetCell.classList.remove("highlight");
                 }, 500);
             } else {
-                message = "Oh no, you measured an entangled particle but it isn't in your favor. No reversal :("
+                message =
+                    "Oh no, you measured an entangled box and something ~spooky~ happened to the other entangled box. No reversal :(";
             }
             c.entangledWith = null;
             measuredEntangled = true;
         }
     });
     if (!measuredEntangled) {
-        message = "You measured a quantum particle in a superposition state. It has now collapsed into a classical state."
+        message =
+            "You measured a quantum particle in a superposition state. It has now collapsed into a classical state.";
     }
 
     // Check for win
     const winner = checkWin();
     if (winner) {
-        if (winner === 'Draw') {
-            message = 'The game is a draw!';
+        if (winner === "Draw") {
+            message = "The game is a draw!";
         } else {
             message = `Player ${winner} wins!`;
         }
@@ -252,7 +296,7 @@ function performMove(index) {
     }
 
     // Switch player
-    currentPlayer = (currentPlayer === PLAYER_X) ? PLAYER_O : PLAYER_X;
+    currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
     // message = '';
     render();
 }
@@ -260,78 +304,79 @@ function performMove(index) {
 // Handle Quantum Move
 function handleQuantumMove() {
     unhighlightAll();
-    cells.forEach(cell => cell.removeEventListener('click', selectClassical));
+    cells.forEach((cell) => cell.removeEventListener("click", selectClassical));
     // Quantum move involves selecting a control and a target box
-    message = 'Select Control Box for Quantum Move.';
+    message = "Select Control Box for Quantum Move.";
     render();
 
     let controlBox = null;
     let targetBox = null;
 
-    cells.forEach(cell => cell.addEventListener('click', selectControl));
+    cells.forEach((cell) => cell.addEventListener("click", selectControl));
 }
 
 function selectControl(event) {
-    const index = parseInt(event.target.getAttribute('data-index'));
+    const index = parseInt(event.target.getAttribute("data-index"));
     const cell = board[index];
-    if (cell.state !== 'quantum') {
-        message = 'Control box must be in a quantum state.';
+    if (cell.state !== "quantum") {
+        message = "Control box must be in a quantum state.";
         render();
         return;
     }
     controlBox = index;
-    message = 'Select Target Box for Quantum Move.';
+    message = "Select Target Box for Quantum Move.";
     render();
-    highlightCell(index, 'control');
+    highlightCell(index, "control");
     // Remove event listener for control selection
-    cells.forEach(cell => cell.removeEventListener('click', selectControl));
+    cells.forEach((cell) => cell.removeEventListener("click", selectControl));
     // Add event listener for target selection
-    cells.forEach(cell => cell.addEventListener('click', selectTarget));
+    cells.forEach((cell) => cell.addEventListener("click", selectTarget));
 }
 
 function selectTarget(event) {
-    const index = parseInt(event.target.getAttribute('data-index'));
+    const index = parseInt(event.target.getAttribute("data-index"));
     const cell = board[index];
-    if (cell.state !== 'classical') {
-        message = 'Target box must be in a classical state.';
+    if (cell.state !== "classical") {
+        message = "Target box must be in a classical state.";
         render();
         return;
     }
     if (index === controlBox) {
-        message = 'Control and target boxes must be different.';
+        message = "Control and target boxes must be different.";
         render();
         return;
     }
     targetBox = index;
     // Create entanglement
     board[targetBox].entangledWith = controlBox;
-    message = `You successfully entangled box ${controlBox +1} with box ${targetBox +1}. Beware of your (and your opponents') actions now.`;
+    message = `You successfully entangled box ${controlBox + 1} with box ${targetBox + 1
+        }. Beware of your (and your opponents') actions now.`;
     quantumMoveSound.play();
     // Animate the entanglement creation
     // Yields the entanglement lines through render()
     // Remove event listener for target selection
-    cells.forEach(cell => cell.removeEventListener('click', selectTarget));
+    cells.forEach((cell) => cell.removeEventListener("click", selectTarget));
     // Remove highlight
     unhighlightAll();
     // Switch player
-    currentPlayer = (currentPlayer === PLAYER_X) ? PLAYER_O : PLAYER_X;
+    currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
     render();
 }
 
 // Highlight selected cell
 function highlightCell(index, type) {
     const cell = cells[index];
-    if (type === 'control') {
-        cell.style.boxShadow = '0 0 15px 5px #ffdd57';
-    } else if (type === 'target') {
-        cell.style.boxShadow = '0 0 15px 5px #57ffdd';
+    if (type === "control") {
+        cell.style.boxShadow = "0 0 15px 5px #ffdd57";
+    } else if (type === "target") {
+        cell.style.boxShadow = "0 0 15px 5px #57ffdd";
     }
 }
 
 // Remove all highlights
 function unhighlightAll() {
-    cells.forEach(cell => {
-        cell.style.boxShadow = 'none';
+    cells.forEach((cell) => {
+        cell.style.boxShadow = "none";
     });
 }
 
@@ -339,28 +384,30 @@ function unhighlightAll() {
 function disableMoves() {
     classicalButton.disabled = true;
     quantumButton.disabled = true;
-    cells.forEach(cell => cell.style.pointerEvents = 'none');
+    cells.forEach((cell) => (cell.style.pointerEvents = "none"));
 }
 
 // Reset Game
 function resetGame() {
-    board = Array(9).fill(EMPTY).map(() => ({
-        state: 'quantum',
-        value: EMPTY,
-        entangledWith: null
-    }));
+    board = Array(9)
+        .fill(EMPTY)
+        .map(() => ({
+            state: "quantum",
+            value: EMPTY,
+            entangledWith: null,
+        }));
     currentPlayer = PLAYER_X;
     message = "Welcome to the game!";
     classicalButton.disabled = false;
     quantumButton.disabled = false;
-    cells.forEach(cell => {
-        cell.style.pointerEvents = 'auto';
-        cell.style.boxShadow = 'none';
-        cell.classList.remove('X', 'O', 'highlight', 'quantum');
-        cell.classList.add('quantum'); // Re-add quantum animation
-        cell.removeEventListener('click', selectClassical);
-        cell.removeEventListener('click', selectControl);
-        cell.removeEventListener('click', selectTarget);
+    cells.forEach((cell) => {
+        cell.style.pointerEvents = "auto";
+        cell.style.boxShadow = "none";
+        cell.classList.remove("X", "O", "highlight", "quantum");
+        cell.classList.add("quantum"); // Re-add quantum animation
+        cell.removeEventListener("click", selectClassical);
+        cell.removeEventListener("click", selectControl);
+        cell.removeEventListener("click", selectTarget);
     });
     entanglementsSVG.innerHTML = `
         <defs>
@@ -378,53 +425,296 @@ function resetGame() {
     render();
 }
 
+// === Create Tooltip Element ===
+const tooltip = document.createElement("div");
+tooltip.id = "tutorialTooltip";
+tooltip.classList.add("tutorial-tooltip");
+tooltip.innerHTML = `
+<div class="tooltip-content">
+<p id="tooltipMessage"></p>
+<button id="tooltipNext">Next</button>
+</div>
+<div class="tooltip-arrow"></div>
+`;
+document.body.appendChild(tooltip);
+
+// === Tutorial Functionality ===
+
+// Function to start the tutorial
+function startTutorial() {
+    currentTutorialStep = 0;
+    showTutorialStep(currentTutorialStep);
+    dimBackground();
+}
+
+// Function to show a specific tutorial step
+function showTutorialStep(step) {
+    if (step >= tutorialSteps.length) {
+        endTutorial();
+        return;
+    }
+
+    const stepInfo = tutorialSteps[step];
+    const targetElement = document.querySelector(stepInfo.element);
+
+    if (!targetElement) {
+        console.error(`Tutorial step element not found: ${stepInfo.element}`);
+        endTutorial();
+        return;
+    }
+
+    // Highlight the target element
+    targetElement.classList.add("highlighted");
+    if (stepInfo.element === "#board") {
+        targetElement.classList.remove("highlighted");
+        cells.forEach((cell) => cell.classList.add("highlighted"));
+    };
+
+    // Position the tooltip
+    const rect = targetElement.getBoundingClientRect();
+    const tooltipWidth = 250; // Match max-width in CSS
+    const tooltipHeight = 100; // Approximate height, adjust as needed
+
+    let top, left;
+
+    // Determine tooltip position based on element's position
+    if (rect.right + tooltipWidth + 20 < window.innerWidth) {
+        // Position tooltip to the right of the element
+        top = rect.top + window.scrollY;
+        left = rect.right + 10 + window.scrollX;
+    } else if (rect.left - tooltipWidth - 20 > 0) {
+        // Position tooltip to the left of the element
+        top = rect.top + window.scrollY;
+        left = rect.left - tooltipWidth - 10 + window.scrollX;
+    } else {
+        // Position tooltip below the element
+        top = rect.bottom + 10 + window.scrollY;
+        left = rect.left + window.scrollX;
+    }
+
+    // Ensure tooltip does not go off-screen vertically
+    const tooltipElement = document.getElementById("tutorialTooltip");
+    tooltipElement.style.top = `${top}px`;
+    tooltipElement.style.left = `${left}px`;
+    tooltipElement.style.display = "block";
+    document.getElementById("tooltipMessage").textContent = stepInfo.message;
+
+    // Optional: Scroll into view
+    targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // Attach event listener for 'Next' button
+    document.getElementById("tooltipNext").onclick = () => {
+        // Remove highlight from current element
+        targetElement.classList.remove("highlighted");
+        if (stepInfo.element === "#board") {
+            cells.forEach((cell) => cell.classList.remove("highlighted"));
+        }
+        // Increment step
+        currentTutorialStep++;
+        // Show next step
+        showTutorialStep(currentTutorialStep);
+    };
+}
+
+// Function to end the tutorial
+function endTutorial() {
+    // Remove highlights and dimming
+    removeHighlightsAndDims();
+    // Hide tooltip
+    tooltip.style.display = "none";
+
+    // // Save that the user has seen the tutorial
+    localStorage.setItem("hasSeenTutorial", "true");
+
+    // Show restart tutorial button
+    restartTutorialBtn.style.display = "block";
+}
+
+// Function to dim background elements except the highlighted element
+function dimBackground() {
+    // Select all interactive elements to dim
+    const interactiveElements = [
+        "#board",
+        "#classicalMove",
+        "#quantumMove",
+        "#reset",
+        "#rulesButton",
+        "#message",
+        "#playMusicButton",
+        ".cell",
+    ];
+
+    interactiveElements.forEach((selector) => {
+        const els = document.querySelectorAll(selector);
+        els.forEach((el) => {
+            el.classList.add("dimmed");
+        });
+    });
+}
+
+// Function to remove dimming and highlights
+function removeHighlightsAndDims() {
+    // Remove dimmed class
+    const dimmedElements = document.querySelectorAll(".dimmed");
+    dimmedElements.forEach((el) => el.classList.remove("dimmed"));
+
+    // Remove highlighted class
+    const highlightedElements = document.querySelectorAll(".highlighted");
+    highlightedElements.forEach((el) => el.classList.remove("highlighted"));
+}
+
+// === Add Restart Tutorial Button ===
+
+// Create Restart Tutorial Button
+const restartTutorialBtn = document.createElement("button");
+restartTutorialBtn.id = "restartTutorial";
+restartTutorialBtn.textContent = "Restart Tutorial";
+restartTutorialBtn.style.position = "fixed";
+restartTutorialBtn.style.bottom = "20px";
+restartTutorialBtn.style.right = "20px";
+restartTutorialBtn.style.padding = "10px 15px";
+restartTutorialBtn.style.backgroundColor = "#ff6b6b";
+restartTutorialBtn.style.color = "#fff";
+restartTutorialBtn.style.border = "none";
+restartTutorialBtn.style.borderRadius = "5px";
+restartTutorialBtn.style.cursor = "pointer";
+restartTutorialBtn.style.zIndex = "100";
+restartTutorialBtn.style.display = "none"; // Hidden by default
+restartTutorialBtn.style.fontSize = "0.9em";
+
+document.body.appendChild(restartTutorialBtn);
+
+restartTutorialBtn.addEventListener("click", () => {
+    localStorage.removeItem("hasSeenTutorial");
+    startTutorial();
+    restartTutorialBtn.style.display = "none";
+});
+
+// === Update Reset Game to Reset Tutorial Status ===
+
+function resetGame() {
+    board = Array(9)
+        .fill(EMPTY)
+        .map(() => ({
+            state: "quantum",
+            value: EMPTY,
+            entangledWith: null,
+        }));
+    currentPlayer = PLAYER_X;
+    message = "Welcome to the game!";
+    classicalButton.disabled = false;
+    quantumButton.disabled = false;
+    cells.forEach((cell) => {
+        cell.style.pointerEvents = "auto";
+        cell.style.boxShadow = "none";
+        cell.classList.remove("X", "O", "highlight", "quantum");
+        cell.classList.add("quantum"); // Re-add quantum animation
+        cell.removeEventListener("click", selectClassical);
+        cell.removeEventListener("click", selectControl);
+        cell.removeEventListener("click", selectTarget);
+    });
+    entanglementsSVG.innerHTML = `
+        <defs>
+        <filter id="glow">
+        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+        <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+        </filter>
+        </defs>
+    `;
+    render();
+
+    // Reset tutorial status
+    localStorage.removeItem("hasSeenTutorial");
+    // Show restart tutorial button
+    restartTutorialBtn.style.display = "block";
+}
 // Attach Event Listeners
-classicalButton.addEventListener('click', () => {
-    selectedMove = 'classical';
+classicalButton.addEventListener("click", () => {
+    selectedMove = "classical";
     handleClassicalMove();
 });
 
-quantumButton.addEventListener('click', () => {
-    selectedMove = 'quantum';
+quantumButton.addEventListener("click", () => {
+    selectedMove = "quantum";
     handleQuantumMove();
 });
 
-resetButton.addEventListener('click', resetGame);
+resetButton.addEventListener("click", resetGame);
 
 // Rules Modal Event Listeners
-rulesButton.onclick = function() {
+rulesButton.onclick = function () {
     rulesModal.style.display = "flex";
-}
+};
 
-span.onclick = function() {
+span.onclick = function () {
     rulesModal.style.display = "none";
-}
+};
 
-initialMusicButton.addEventListener('click', () => {
+// Sound Modal Close (Already in your code)
+initialMusicButton.addEventListener("click", () => {
     backgroundMusic.play();
-    soundModal.style.display = 'none';
-    musicToggle.style.display = 'block';
+    soundModal.style.display = "none";
+    musicToggle.style.display = "block";
+
+    // After sound modal is closed, show rules modal
+    rulesModal.style.display = "flex";
 });
 
-musicToggle.addEventListener('click', () => {
-    if (backgroundMusic.paused) {
-        backgroundMusic.play();
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
-    } else {
-        backgroundMusic.pause();
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
+// Rules Modal Close Event (Modify to trigger tutorial)
+const rulesModalClose = document.querySelector("#rulesModal .close"); // Ensure correct selector
+rulesModalClose.onclick = function () {
+    console.log(rulesModalClose);
+    rulesModal.style.display = "none";
+    // Start the tutorial after closing the rules modal
+    // Check if the tutorial has already been run
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+    if (hasSeenTutorial === "false") {
+        startTutorial();
     }
-});
+    // startTutorial();
+};
 
-
-window.onclick = function(event) {
+// Optional: If rules modal can be closed by clicking outside, ensure tutorial starts
+window.onclick = function (event) {
     if (event.target == rulesModal) {
         rulesModal.style.display = "none";
+        const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+        if (hasSeenTutorial === "false") {
+            startTutorial();
+        }
     }
-}
+};
+
+// === Adjust Initial Load to Show Sound and Then Rules Modal ===
+
+window.addEventListener("load", () => {
+    // soundModal.style.display = "flex";
+    localStorage.setItem("hasSeenTutorial", "false");
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+    console.log(hasSeenTutorial);
+    if (hasSeenTutorial === "false") {
+        // Show sound modal
+        soundModal.style.display = "flex";
+    }
+});
+
+musicToggle.addEventListener("click", () => {
+    if (backgroundMusic.paused) {
+        backgroundMusic.play();
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+    } else {
+        backgroundMusic.pause();
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
+    }
+});
 
 // Initial Render
-message = "Welcome to the game!"
+message = "Welcome to the game!";
 render();

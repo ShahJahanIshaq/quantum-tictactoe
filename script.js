@@ -436,18 +436,15 @@ function disableGameButtons() {
     quantumButton.disabled = true;
     resetButton.disabled = true;
     rulesButton.disabled = true;
-    musicToggle.disabled = true;
 
-    classicalButton.style.opacity = "0.5";
-    quantumButton.style.opacity = "0.5";
-    resetButton.style.opacity = "0.5";
-    rulesButton.style.opacity = "0.5";
-    musicToggle.style.opacity = "0.5";
+    classicalButton.style.opacity = "0.2";
+    quantumButton.style.opacity = "0.2";
+    resetButton.style.opacity = "0.2";
+    rulesButton.style.opacity = "0.2";
     classicalButton.style.cursor = "not-allowed";
     quantumButton.style.cursor = "not-allowed";
     resetButton.style.cursor = "not-allowed";
     rulesButton.style.cursor = "not-allowed";
-    musicToggle.style.cursor = "not-allowed";
 }
 
 function enableGameButtons() {
@@ -455,18 +452,15 @@ function enableGameButtons() {
     quantumButton.disabled = false;
     resetButton.disabled = false;
     rulesButton.disabled = false;
-    musicToggle.disabled = false;
 
     classicalButton.style.opacity = "1";
     quantumButton.style.opacity = "1";
     resetButton.style.opacity = "1";
     rulesButton.style.opacity = "1";
-    musicToggle.style.opacity = "1";
     classicalButton.style.cursor = "pointer";
     quantumButton.style.cursor = "pointer";
     resetButton.style.cursor = "pointer";
     rulesButton.style.cursor = "pointer";
-    musicToggle.style.cursor = "pointer";
 }
 
 // === Create Tooltip Element ===
@@ -704,11 +698,15 @@ resetButton.addEventListener("click", resetGame);
 // Rules Modal Event Listeners
 rulesButton.onclick = function () {
     rulesModal.style.display = "flex";
+    restartTutorialBtn.style.display = "none";
 };
 
 playGameButton.onclick = function () {
     rulesModal.style.display = "none";
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+    if (hasSeenTutorial !== "false") {
+        restartTutorialBtn.style.display = "block";
+    }
     if (hasSeenTutorial === "false") {
         startTutorial();
     }
@@ -731,9 +729,13 @@ rulesModalClose.onclick = function () {
     // Start the tutorial after closing the rules modal
     // Check if the tutorial has already been run
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+    if (hasSeenTutorial !== "false") {
+        restartTutorialBtn.style.display = "block";
+    }
     if (hasSeenTutorial === "false") {
         startTutorial();
     }
+
 };
 
 // Optional: If rules modal can be closed by clicking outside, ensure tutorial starts
@@ -741,6 +743,9 @@ window.onclick = function (event) {
     if (event.target == rulesModal) {
         rulesModal.style.display = "none";
         const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+        if (hasSeenTutorial !== "false") {
+            restartTutorialBtn.style.display = "block";
+        }
         if (hasSeenTutorial === "false") {
             startTutorial();
         }

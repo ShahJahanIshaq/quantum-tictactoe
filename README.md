@@ -2,7 +2,7 @@
 
 **Quantum Tic-Tac-Toe** is a modern twist on the classic Tic-Tac-Toe game, incorporating principles of quantum mechanics to introduce new strategic dimensions. Players engage in a game where each move involves quantum superposition and entanglement, creating a dynamic and intellectually stimulating experience.
 
-![Gameplay Screenshot][./assets/gameplay_screenshot_2.png]
+![Gameplay Screenshot](assets/gameplay_screenshot_2.png)
 
 ## Table of Contents
 

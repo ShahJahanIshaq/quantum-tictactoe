@@ -2,43 +2,21 @@
 
 **Quantum Tic-Tac-Toe** is a modern twist on the classic Tic-Tac-Toe game, incorporating principles of quantum mechanics to introduce new strategic dimensions. Players engage in a game where each move involves quantum superposition and entanglement, creating a dynamic and intellectually stimulating experience.
 
+*Note: This game was developed by Shah Jahan Ishaq to serve as the final project of the CCST9077 course at the University of Hong Kong (HKU).*
+
 ![Gameplay Screenshot](assets/gameplay_screenshot_2.png)
 
 ## Table of Contents
 
 - [Demo](#demo)
-- [Installation](#installation)
-- [Usage](#usage)
 - [Gameplay Instructions](#gameplay-instructions)
+- [References](#references)
 - [Contributing](#contributing)
-- [License](#license)
 - [Contact](#contact)
 
 ## Demo
 
 Check out the live version of Quantum Tic-Tac-Toe [here](https://shahjahanishaq.github.io/quantum-tictactoe/).
-
-## Installation
-
-Quantum Tic-Tac-Toe is a web-based game and does not require any server-side setup. Follow these steps to get started:
-
-1. **Clone the Repository**
-    ```bash
-    git clone https://github.com/ShahJahanIshaq/quantum-tic-tac-toe.git
-    ```
-
-2. **Navigate to the Project Directory**
-    ```bash
-    cd quantum-tic-tac-toe
-    ```
-
-3. **Open the Game in Your Browser**
-    - Locate the `index.html` file in the project directory.
-    - Double-click the file to open it in your default web browser.
-
-## Usage
-
-Once installed, you can play Quantum Tic-Tac-Toe directly in your web browser. The game is ready to play without any additional configuration.
 
 ## Gameplay Instructions
 
@@ -61,6 +39,10 @@ Quantum Tic-Tac-Toe introduces new mechanics into the classic game:
 
 5. **Draw**
     - If all cells are in classical states without any player achieving the winning condition, the game ends in a draw.
+
+## References
+
+1. Sagole, S., Dey, A., Behera, B. K., & Panigrahi, P. K. (2019). *Quantum Tic-Tac-Toe: A Hybrid of Quantum and Classical Computing*. https://doi.org/10.13140/RG.2.2.18883.76320
 
 ## Contributing
 

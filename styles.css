@@ -3,7 +3,6 @@ html {
     height: 100%;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* background-color: #1e1e1e; */
     background: radial-gradient(circle, rgba(13, 13, 38, 1) 0%, rgba(39, 29, 98, 1) 35%, rgba(0, 0, 0, 1) 100%);
     color: #ffffff;
 }
@@ -53,7 +52,6 @@ h1 {
     height: 320px;
     pointer-events: none;
     z-index: 2;
-    /* Bring lines above the grid */
 }
 
 #board {
@@ -142,7 +140,6 @@ h1 {
     border-radius: 4px;
     font-size: 0.7em;
     z-index: 3;
-    /* Ensure indicators are above lines */
 }
 
 /* Controls Styles */
@@ -163,7 +160,6 @@ button {
     background-color: #61dafb;
     color: #000;
     transition: background-color 0.3s, transform 0.2s;
-    /* box-shadow: 0 4px #3e8e41; */
 }
 
 button:hover {
@@ -177,29 +173,23 @@ button:active {
     transform: translateY(2px);
 }
 
-button:disabled {
+/* button:disabled {
     background-color: #888;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-}
+} */
 
 /* Message Styles */
 #message {
     margin-top: 20px;
     font-size: 1.4em;
-    /* Increased font size */
     min-height: 70px;
     padding: 10px;
-    /* Added padding */
     background-color: #444;
-    /* Subtle background color */
     border-radius: 5px;
-    /* Rounded corners */
     box-shadow: 0px 0px 10px #61dafb;
-    /* Subtle glow effect */
     transition: all 0.3s ease-in-out;
-    /* Smooth transition */
 }
 
 /* SVG Entanglement Lines */
@@ -211,7 +201,6 @@ button:disabled {
     height: 320px;
     pointer-events: none;
     z-index: 2;
-    /* Above the grid */
 }
 
 /* Animations */
@@ -294,68 +283,80 @@ svg defs {
 /* Modal Styles */
 .rules-modal {
     display: flex;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 10;
-    /* Sit on top */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     overflow: auto;
-    /* Enable scroll if needed */
-    /* background-color: rgba(0,0,0,0.7); Black w/ opacity */
     background: radial-gradient(circle, rgba(13, 13, 38, 1) 0%, rgba(39, 29, 98, 1) 35%, rgba(0, 0, 0, 1) 100%);
     justify-content: center;
-    /* Center horizontally */
     align-items: center;
-    /* Center vertically */
 }
 
 .sound-modal {
     display: flex;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 10;
-    /* Sit on top */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     overflow: auto;
-    /* Enable scroll if needed */
-    /* background-color: rgba(0,0,0,0.7); Black w/ opacity */
     background: radial-gradient(circle, rgba(13, 13, 38, 1) 0%, rgba(39, 29, 98, 1) 35%, rgba(0, 0, 0, 1) 100%);
     justify-content: center;
-    /* Center horizontally */
     align-items: center;
-    /* Center vertically */
 }
 
 
 .rules-modal-content {
-    background-color: #2c2c2c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     margin: 10% auto;
-    /* 10% from the top and centered */
     padding: 20px;
-    border: 1px solid #888;
     width: 80%;
-    max-width: 600px;
     border-radius: 10px;
     color: #fff;
     position: relative;
 }
 
+.rules-sections {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.rules-box {
+    flex: 1;
+    margin: 0 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px 5px #ccc;
+    background-color: #2c2c2c;
+}
+
+.rules-modal-content h2 {
+    margin-top: 10;
+}
+
+#playGameButton {
+    background-color: #ffcc00;
+    color: #000;
+    box-shadow: 0 0 10px 3px yellow;
+}
+
+#playGameButton:hover {
+    background-color: #e6b800;
+}
+
+
 .sound-modal-content {
     background-color: #2c2c2c;
     margin: 10% auto;
-    /* 10% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
@@ -364,15 +365,10 @@ svg defs {
     color: #fff;
     position: relative;
     text-align: center;
-    /* Center text and inline content */
     display: flex;
-    /* Enable flexbox layout */
     justify-content: center;
-    /* Center children horizontally */
     align-items: center;
-    /* Center children vertically */
     flex-direction: column;
-    /* Stack children vertically */
 }
 
 .close {
@@ -418,9 +414,7 @@ button#playInitialMusicButton img {
     top: 20px;
     right: 20px;
     z-index: 20;
-    /* Make sure it's above other content */
     display: none;
-    /* Start hidden and show after sound is enabled */
     background: none;
     border: none;
     cursor: pointer;
@@ -429,30 +423,21 @@ button#playInitialMusicButton img {
 
 #playMusicButton img {
     width: 30px;
-    /* Smaller icon after the modal is closed */
     height: auto;
 }
 
 /* Tutorial Modal Styles */
 .tutorial-modal {
     display: none;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 100;
-    /* Sit on top of other modals */
     left: 0;
     top: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     background: rgba(0, 0, 0, 0.8);
-    /* Black w/ opacity */
     justify-content: center;
-    /* Center horizontally */
     align-items: center;
-    /* Center vertically */
 }
 
 .tutorial-modal-content {
@@ -483,37 +468,16 @@ button#playInitialMusicButton img {
     text-decoration: none;
 }
 
-#tutorialNext {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #61dafb;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #000;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-#tutorialNext:hover {
-    background-color: #21a1f1;
-}
-
-/* Highlighting Styles */
-
 .tutorial-tooltip {
     position: absolute;
-    max-width: 250px;
+    max-width: 300px;
     padding: 10px;
     background-color: rgba(44, 44, 44, 0.95);
-    /* Semi-transparent dark background */
     color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     z-index: 150;
-    /* Above other elements */
     display: none;
-    /* Hidden initially */
 }
 
 .tutorial-tooltip .tooltip-content {
@@ -534,13 +498,13 @@ button#playInitialMusicButton img {
 }
 
 .tutorial-tooltip .tooltip-content p {
-    margin: 0;
-    font-size: 0.9em;
+    margin: 10;
+    font-size: 0.95em;
 }
 
 #tutorialNext {
     margin-top: 10px;
-    padding: 5px 10px;
+    padding: 10px 10px;
     background-color: #61dafb;
     border: none;
     border-radius: 5px;
@@ -554,7 +518,6 @@ button#playInitialMusicButton img {
     background-color: #21a1f1;
 }
 
-/* === Highlighting Styles === */
 .highlighted {
     position: relative;
     z-index: 151;
@@ -564,8 +527,7 @@ button#playInitialMusicButton img {
 }
 
 .dimmed {
-    opacity: 0.5;
-    /* Reduced dimness for less opacity */
+    opacity: 0.2;
     transition: opacity 0.3s ease-in-out;
 }
 
@@ -584,6 +546,5 @@ button#playInitialMusicButton img {
 
     .tutorial-tooltip .tooltip-arrow {
         display: none;
-        /* Hide arrow on small screens */
     }
 }

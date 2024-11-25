@@ -40,6 +40,7 @@ const rulesModal = document.getElementById("rulesModal");
 const span = document.getElementsByClassName("close")[0];
 const soundModal = document.getElementById("soundPromptModal");
 const initialMusicButton = document.getElementById("playInitialMusicButton");
+const playGameButton = document.getElementById("playGameButton");
 
 // DOM Elements for Tutorial
 const tutorialModal = document.getElementById("tutorialModal");
@@ -52,27 +53,32 @@ const tutorialSteps = [
     {
         element: "#board",
         message:
-            "This is the game grid where you place your moves. It consists of 9 cells arranged in a 3x3 grid.",
+            "<p>This is the game grid where you place your moves. It consists of 9 cells arranged in a 3x3 grid.<br><br>The cells are neither X nor O. They are in a superposition state of both X and O.<br><br><strong>It is a NEW STATE!</strong></p>",
     },
     {
         element: "#classicalMove",
         message:
-            'The "Classical Move" button allows you to collapse a quantum state into either "X" or "O" randomly.',
+            '<p>The "Classical Move" button allows you to collapse a quantum box into either "X" or "O" randomly.<br><br>Just like you do with quantum particles, you are making a measurement here.<br><br>And by doing so, you <strong>COLLAPSE</strong> the box from a quantum state (superposition) to a classical state.</p>',
     },
     {
         element: "#quantumMove",
         message:
-            'The "Quantum Move" button lets you entangle a quantum state with a classical state, adding complexity to your strategy.',
+            '<p>This is an interesting one.<br><br>The "Quantum Move" button lets you entangle a quantum box with a classical box. So you can <i>spookily</i> influence an entangled classical box when the quantum box is measured, <i>no matter the distance</i>.<br><br>Read the rules to understand.<br><br><strong>Keep in mind: in the real quantum world, only quantum particles (not classical) are entangled with each other, but for this game, we have made an exception.</strong></p>',
+    },
+    {
+        element: "#reset",
+        message:
+            '<p>This button puts all boxes back into their quantum states, the superposition of X and O.</p>'
     },
     {
         element: "#message",
         message:
-            "This area displays important game messages, updates, and notifications.",
+            "<p>This area displays important game messages, updates, and notifications.</p>",
     },
     {
         element: "#rulesButton",
         message:
-            'Clicking the "Rules" button will show you the detailed rules of Quantum Tic-Tac-Toe.',
+            '<p>Clicking the "Rules" button will show you the detailed rules of Quantum Tic-Tac-Toe.</p>',
     },
 ];
 
@@ -425,6 +431,44 @@ function resetGame() {
     render();
 }
 
+function disableGameButtons() {
+    classicalButton.disabled = true;
+    quantumButton.disabled = true;
+    resetButton.disabled = true;
+    rulesButton.disabled = true;
+    musicToggle.disabled = true;
+
+    classicalButton.style.opacity = "0.5";
+    quantumButton.style.opacity = "0.5";
+    resetButton.style.opacity = "0.5";
+    rulesButton.style.opacity = "0.5";
+    musicToggle.style.opacity = "0.5";
+    classicalButton.style.cursor = "not-allowed";
+    quantumButton.style.cursor = "not-allowed";
+    resetButton.style.cursor = "not-allowed";
+    rulesButton.style.cursor = "not-allowed";
+    musicToggle.style.cursor = "not-allowed";
+}
+
+function enableGameButtons() {
+    classicalButton.disabled = false;
+    quantumButton.disabled = false;
+    resetButton.disabled = false;
+    rulesButton.disabled = false;
+    musicToggle.disabled = false;
+
+    classicalButton.style.opacity = "1";
+    quantumButton.style.opacity = "1";
+    resetButton.style.opacity = "1";
+    rulesButton.style.opacity = "1";
+    musicToggle.style.opacity = "1";
+    classicalButton.style.cursor = "pointer";
+    quantumButton.style.cursor = "pointer";
+    resetButton.style.cursor = "pointer";
+    rulesButton.style.cursor = "pointer";
+    musicToggle.style.cursor = "pointer";
+}
+
 // === Create Tooltip Element ===
 const tooltip = document.createElement("div");
 tooltip.id = "tutorialTooltip";
@@ -442,9 +486,10 @@ document.body.appendChild(tooltip);
 
 // Function to start the tutorial
 function startTutorial() {
+    disableGameButtons();
     currentTutorialStep = 0;
-    showTutorialStep(currentTutorialStep);
     dimBackground();
+    showTutorialStep(currentTutorialStep);
 }
 
 // Function to show a specific tutorial step
@@ -467,7 +512,12 @@ function showTutorialStep(step) {
     targetElement.classList.add("highlighted");
     if (stepInfo.element === "#board") {
         targetElement.classList.remove("highlighted");
-        cells.forEach((cell) => cell.classList.add("highlighted"));
+        targetElement.classList.remove("dimmed");
+        cells.forEach((cell) => {
+            cell.classList.add("highlighted");
+            cell.classList.remove("dimmed");
+            console.log(cell);
+        });
     };
 
     // Position the tooltip
@@ -480,7 +530,7 @@ function showTutorialStep(step) {
     // Determine tooltip position based on element's position
     if (rect.right + tooltipWidth + 20 < window.innerWidth) {
         // Position tooltip to the right of the element
-        top = rect.top + window.scrollY;
+        top = rect.top + window.scrollY - 100;
         left = rect.right + 10 + window.scrollX;
     } else if (rect.left - tooltipWidth - 20 > 0) {
         // Position tooltip to the left of the element
@@ -497,7 +547,7 @@ function showTutorialStep(step) {
     tooltipElement.style.top = `${top}px`;
     tooltipElement.style.left = `${left}px`;
     tooltipElement.style.display = "block";
-    document.getElementById("tooltipMessage").textContent = stepInfo.message;
+    document.getElementById("tooltipMessage").innerHTML = stepInfo.message;
 
     // Optional: Scroll into view
     targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -507,7 +557,10 @@ function showTutorialStep(step) {
         // Remove highlight from current element
         targetElement.classList.remove("highlighted");
         if (stepInfo.element === "#board") {
-            cells.forEach((cell) => cell.classList.remove("highlighted"));
+            cells.forEach((cell) => {
+                cell.classList.remove("highlighted");
+                cell.classList.add("dimmed");
+            });
         }
         // Increment step
         currentTutorialStep++;
@@ -518,6 +571,7 @@ function showTutorialStep(step) {
 
 // Function to end the tutorial
 function endTutorial() {
+    enableGameButtons();
     // Remove highlights and dimming
     removeHighlightsAndDims();
     // Hide tooltip
@@ -633,6 +687,7 @@ function resetGame() {
     // Show restart tutorial button
     restartTutorialBtn.style.display = "block";
 }
+
 // Attach Event Listeners
 classicalButton.addEventListener("click", () => {
     selectedMove = "classical";
@@ -651,9 +706,13 @@ rulesButton.onclick = function () {
     rulesModal.style.display = "flex";
 };
 
-span.onclick = function () {
+playGameButton.onclick = function () {
     rulesModal.style.display = "none";
-};
+    const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+    if (hasSeenTutorial === "false") {
+        startTutorial();
+    }
+}
 
 // Sound Modal Close (Already in your code)
 initialMusicButton.addEventListener("click", () => {
@@ -668,7 +727,6 @@ initialMusicButton.addEventListener("click", () => {
 // Rules Modal Close Event (Modify to trigger tutorial)
 const rulesModalClose = document.querySelector("#rulesModal .close"); // Ensure correct selector
 rulesModalClose.onclick = function () {
-    console.log(rulesModalClose);
     rulesModal.style.display = "none";
     // Start the tutorial after closing the rules modal
     // Check if the tutorial has already been run
@@ -676,7 +734,6 @@ rulesModalClose.onclick = function () {
     if (hasSeenTutorial === "false") {
         startTutorial();
     }
-    // startTutorial();
 };
 
 // Optional: If rules modal can be closed by clicking outside, ensure tutorial starts

@@ -21,10 +21,10 @@
             <span class="tutorial-close">&times;</span>
             <h2>Tutorial</h2>
             <p id="tutorialMessage"></p>
-            <button id="tutorialNext">Next</button>
+            <button id="tutorialNext">Nxxt</button>
         </div>
     </div>
-    
+
     <div id="gameContainer">
         <h1>Quantum Tic-Tac-Toe</h1>
         <div id="gameStatus">Player X's Turn</div>
@@ -69,39 +69,51 @@
         <div class="rules-modal-content">
             <span class="close">&times;</span>
             <h2>Welcome to Quantum Tic-Tac-Toe, wizard!</h2>
-            <p>
-                Unlike the Muggle Tic-tac-toe, here each box is hidden from you. They start in a state of both X and O, a <strong>SUPERPOSITION</strong> of states. This state will collapse into either X or O (a <strong>CLASSICAL</strong> state) when you decide to look into the box.
-            </p>
-            <p>
-                But, that's not it. It is not all luck. Your outcome is in your hands. Wave your wand and entangle your boxes with each other, so you can affect boxes that you did not even look into ... boxes far, far, away from you.
-            </p>
-            <p>
-                But beware! It may go against you as well.
-            </p>
-            <p>
-                <strong>Moves:</strong>
-                <ol>
-                    <li><strong>Classical Move:</strong> Collapse a quantum state to either 'X' or 'O' with equal probability.</li>
-                    <li><strong>Quantum Move:</strong> Entangle a control box (quantum state) with a target box (classical state). If the control box collapses to the player's favored state, the target box state "reverses" (strategize here!).</li>
-                </ol>
-            </p>
-            <p>
-                <strong>Player Favored States:</strong>
-                <ul>
-                    <li><strong>Player X:</strong> Favored state is 'X'.</li>
-                    <li><strong>Player O:</strong> Favored state is 'O'.</li>
-                </ul>
-            </p>
-            <p>
-                <strong>Winning Condition:</strong> Align three of your marks ('X' or 'O') in a row, column, or diagonal.
-            </p>
-            <p>
-                <strong>Game Start:</strong> Player X begins with a classical move.
-            </p>
-            <p>
-                Strategize your moves considering entanglements that can affect future state collapses.
-            </p>
+            <div class="rules-sections">
+                <div class="rules-box">
+                    <h3>Storyline</h3>
+                    <p>
+                        Unlike the Muggle Tic-tac-toe, here each box is hidden from you. They start in a state of both X and O, a <strong>SUPERPOSITION</strong> of states. This state will collapse into either X or O (a <strong>CLASSICAL</strong> state) when you decide to look into the box.
+                    </p>
+                    <p>
+                        But, that's not it. It is not all luck. Your outcome is in your hands. Wave your wand and entangle your boxes with each other, so you can affect boxes that you did not even look into ... boxes far, far, away from you.
+                    </p>
+                    <p>
+                        But beware! It may go against you as well.
+                    </p>
+                </div>
+                <div class="rules-box">
+                    <h3>Moves</h3>
+                    <p>
+                        <p>
+                            <strong>Classical Move:</strong> Collapse a quantum state to either 'X' or 'O' with equal probability.
+                        </p>
+                        <p>
+                            <strong>Quantum Move:</strong> Entangle a control box (quantum state) with a target box (classical state). If the control box collapses to the player's favored state, the target box state "reverses" (strategize here!).
+                        </p>
+                    </p>
+                    <p>
+                        <strong>Favored States:</strong>
+                        <p>
+                            <strong>Player X:</strong> Favored state is 'X'.<br>
+                            <strong>Player O:</strong> Favored state is 'O'.
+                    </p>
+                </div>
+                <div class="rules-box">
+                    <h3>Winning</h3>
+                    <p>
+                        <strong>Winning Condition:</strong> Align three of your marks ('X' or 'O') in a row, column, or diagonal.
+                    </p>
+                    <p>
+                        <strong>Game Start:</strong> Player X begins with a classical move.
+                    </p>
+                    <p>
+                        Strategize your moves considering entanglements that can affect future state collapses.
+                    </p>
+                </div>
+            </div>
             <h2>Challenge. Strategize. Win!</h2>
+            <button id="playGameButton">Play Game</button>
         </div>
     </div>
 

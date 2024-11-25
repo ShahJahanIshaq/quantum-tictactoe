@@ -615,7 +615,7 @@ function resetGame() {
         }));
     currentPlayer = PLAYER_X;
     messageDiv.classList.remove("winner");
-    message = "Welcome to the game!";
+    message = "Welcome to the game! Choose a move.";
     classicalButton.disabled = false;
     quantumButton.disabled = false;
     cells.forEach((cell) => {
@@ -743,5 +743,5 @@ musicToggle.addEventListener("click", () => {
 });
 
 // Initial Render
-message = "Welcome to the game!";
+message = "Welcome to the game! Choose a move.";
 render();

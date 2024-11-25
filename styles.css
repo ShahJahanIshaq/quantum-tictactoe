@@ -524,7 +524,7 @@ button#playInitialMusicButton img {
     position: relative;
     z-index: 151;
     /* Above the tooltip */
-    box-shadow: 0 0 15px 5px yellow;
+    /* box-shadow: 0 0 15px 5px yellow; */
     transition: box-shadow 0.3s ease-in-out;
 }
 

@@ -291,6 +291,7 @@ function performMove(index) {
     // Check for win
     const winner = checkWin();
     if (winner) {
+        messageDiv.classList.add("winner");
         if (winner === "Draw") {
             message = "The game is a draw!";
         } else {
@@ -299,6 +300,8 @@ function performMove(index) {
         render();
         disableMoves();
         return;
+    } else {
+        messageDiv.classList.remove("winner");
     }
 
     // Switch player
@@ -393,43 +396,6 @@ function disableMoves() {
     cells.forEach((cell) => (cell.style.pointerEvents = "none"));
 }
 
-// Reset Game
-function resetGame() {
-    board = Array(9)
-        .fill(EMPTY)
-        .map(() => ({
-            state: "quantum",
-            value: EMPTY,
-            entangledWith: null,
-        }));
-    currentPlayer = PLAYER_X;
-    message = "Welcome to the game!";
-    classicalButton.disabled = false;
-    quantumButton.disabled = false;
-    cells.forEach((cell) => {
-        cell.style.pointerEvents = "auto";
-        cell.style.boxShadow = "none";
-        cell.classList.remove("X", "O", "highlight", "quantum");
-        cell.classList.add("quantum"); // Re-add quantum animation
-        cell.removeEventListener("click", selectClassical);
-        cell.removeEventListener("click", selectControl);
-        cell.removeEventListener("click", selectTarget);
-    });
-    entanglementsSVG.innerHTML = `
-        <defs>
-            <filter id="glow">
-                <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-            </filter>
-        </defs>
-    `;
-    render();
-}
 
 function disableGameButtons() {
     classicalButton.disabled = true;
@@ -510,7 +476,6 @@ function showTutorialStep(step) {
         cells.forEach((cell) => {
             cell.classList.add("highlighted");
             cell.classList.remove("dimmed");
-            console.log(cell);
         });
     };
 
@@ -649,6 +614,7 @@ function resetGame() {
             entangledWith: null,
         }));
     currentPlayer = PLAYER_X;
+    messageDiv.classList.remove("winner");
     message = "Welcome to the game!";
     classicalButton.disabled = false;
     quantumButton.disabled = false;
@@ -758,7 +724,6 @@ window.addEventListener("load", () => {
     // soundModal.style.display = "flex";
     localStorage.setItem("hasSeenTutorial", "false");
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-    console.log(hasSeenTutorial);
     if (hasSeenTutorial === "false") {
         // Show sound modal
         soundModal.style.display = "flex";

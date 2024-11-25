@@ -334,7 +334,7 @@ svg defs {
 
 .rules-box {
     flex: 1;
-    margin: 0 10px;
+    margin: 0 20px;
     padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 0 10px 5px #ccc;

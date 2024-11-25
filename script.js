@@ -299,7 +299,11 @@ function performMove(index) {
 // Handle Quantum Move
 function handleQuantumMove() {
     unhighlightAll();
-    cells.forEach((cell) => cell.removeEventListener("click", selectClassical));
+    cells.forEach((cell) => {
+        cell.removeEventListener("click", selectClassical);
+        cell.removeEventListener("click", selectControl);
+        cell.removeEventListener("click", selectTarget);
+        });
     message = "Select Control Box for Quantum Move.";
     render();
 

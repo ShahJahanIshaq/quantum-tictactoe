@@ -48,7 +48,6 @@ const tutorialMessage = document.getElementById("tutorialMessage");
 const tutorialNext = document.getElementById("tutorialNext");
 const tutorialClose = document.querySelector(".tutorial-close");
 
-// === Tutorial Steps Definition ===
 const tutorialSteps = [
     {
         element: "#board",
@@ -96,15 +95,12 @@ function render() {
             cell.classList.add("occupied");
             cell.classList.add(cellData.value);
             cell.textContent = cellData.value;
-            // Apply color based on player
             cell.style.backgroundColor = "#ffffff";
         } else {
-            // Quantum state animation
             cell.classList.add("quantum");
         }
     });
 
-    // Clear and redraw entanglement lines
     drawEntanglements();
 
     gameStatus.textContent = `Player ${currentPlayer}'s Turn`;
@@ -113,7 +109,6 @@ function render() {
 
 // Draw Entanglements using SVG Paths with Curves
 function drawEntanglements() {
-    // Clear existing lines
     const existingLines = entanglementsSVG.querySelectorAll(".entanglement-line");
     existingLines.forEach((line) => line.remove());
 
@@ -131,7 +126,6 @@ function drawCurvedLine(fromIndex, toIndex, player) {
     const gap = 5;
     const svgSize = entanglementsSVG.clientWidth;
 
-    // Calculate positions (center of cells)
     const getPosition = (idx) => {
         const row = Math.floor(idx / 3);
         const col = idx % 3;
@@ -148,7 +142,7 @@ function drawCurvedLine(fromIndex, toIndex, player) {
     const deltaX = toPos.x - fromPos.x;
     const deltaY = toPos.y - fromPos.y;
     const dist = Math.hypot(deltaX, deltaY);
-    const curvature = 0.3; // Adjust for more or less curvature
+    const curvature = 0.3;
 
     const controlPointOffsetX = -deltaY * curvature;
     const controlPointOffsetY = deltaX * curvature;
@@ -166,12 +160,6 @@ function drawCurvedLine(fromIndex, toIndex, player) {
     );
     path.classList.add("entanglement-line");
 
-    // Set color based on player
-    if (player === PLAYER_X) {
-        path.style.stroke = "#e63946"; // Red for X
-    } else if (player === PLAYER_O) {
-        path.style.stroke = "#1d3557"; // Blue for O
-    }
     path.style.stroke = "#fedd56";
 
     entanglementsSVG.appendChild(path);
@@ -228,7 +216,6 @@ function handleClassicalMove(index) {
 function selectClassical(event) {
     const index = parseInt(event.target.getAttribute("data-index"));
     performMove(index);
-    // Remove this event listener after selection
     cells.forEach((cell) => cell.removeEventListener("click", selectClassical));
     addedEventListener = null;
 }
@@ -306,7 +293,6 @@ function performMove(index) {
 
     // Switch player
     currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
-    // message = '';
     render();
 }
 
@@ -314,12 +300,8 @@ function performMove(index) {
 function handleQuantumMove() {
     unhighlightAll();
     cells.forEach((cell) => cell.removeEventListener("click", selectClassical));
-    // Quantum move involves selecting a control and a target box
     message = "Select Control Box for Quantum Move.";
     render();
-
-    let controlBox = null;
-    let targetBox = null;
 
     cells.forEach((cell) => cell.addEventListener("click", selectControl));
 }
@@ -336,9 +318,7 @@ function selectControl(event) {
     message = "Select Target Box for Quantum Move.";
     render();
     highlightCell(index, "control");
-    // Remove event listener for control selection
     cells.forEach((cell) => cell.removeEventListener("click", selectControl));
-    // Add event listener for target selection
     cells.forEach((cell) => cell.addEventListener("click", selectTarget));
 }
 
@@ -361,13 +341,8 @@ function selectTarget(event) {
     message = `You successfully entangled box ${controlBox + 1} with box ${targetBox + 1
         }. Beware of your (and your opponents') actions now.`;
     quantumMoveSound.play();
-    // Animate the entanglement creation
-    // Yields the entanglement lines through render()
-    // Remove event listener for target selection
     cells.forEach((cell) => cell.removeEventListener("click", selectTarget));
-    // Remove highlight
     unhighlightAll();
-    // Switch player
     currentPlayer = currentPlayer === PLAYER_X ? PLAYER_O : PLAYER_X;
     render();
 }
@@ -482,7 +457,6 @@ function showTutorialStep(step) {
     // Position the tooltip
     const rect = targetElement.getBoundingClientRect();
     const tooltipWidth = 250; // Match max-width in CSS
-    const tooltipHeight = 100; // Approximate height, adjust as needed
 
     let top, left;
 
@@ -508,7 +482,7 @@ function showTutorialStep(step) {
     tooltipElement.style.display = "block";
     document.getElementById("tooltipMessage").innerHTML = stepInfo.message;
 
-    // Optional: Scroll into view
+    // Scroll into view
     targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
 
     // Attach event listener for 'Next' button
@@ -521,9 +495,9 @@ function showTutorialStep(step) {
                 cell.classList.add("dimmed");
             });
         }
-        // Increment step
+
         currentTutorialStep++;
-        // Show next step
+
         showTutorialStep(currentTutorialStep);
     };
 }
@@ -531,21 +505,19 @@ function showTutorialStep(step) {
 // Function to end the tutorial
 function endTutorial() {
     enableGameButtons();
-    // Remove highlights and dimming
+
     removeHighlightsAndDims();
-    // Hide tooltip
+
     tooltip.style.display = "none";
 
-    // // Save that the user has seen the tutorial
     localStorage.setItem("hasSeenTutorial", "true");
 
-    // Show restart tutorial button
     restartTutorialBtn.style.display = "block";
 }
 
 // Function to dim background elements except the highlighted element
 function dimBackground() {
-    // Select all interactive elements to dim
+
     const interactiveElements = [
         "#board",
         "#classicalMove",
@@ -567,11 +539,10 @@ function dimBackground() {
 
 // Function to remove dimming and highlights
 function removeHighlightsAndDims() {
-    // Remove dimmed class
+
     const dimmedElements = document.querySelectorAll(".dimmed");
     dimmedElements.forEach((el) => el.classList.remove("dimmed"));
 
-    // Remove highlighted class
     const highlightedElements = document.querySelectorAll(".highlighted");
     highlightedElements.forEach((el) => el.classList.remove("highlighted"));
 }
@@ -592,7 +563,7 @@ restartTutorialBtn.style.border = "none";
 restartTutorialBtn.style.borderRadius = "5px";
 restartTutorialBtn.style.cursor = "pointer";
 restartTutorialBtn.style.zIndex = "100";
-restartTutorialBtn.style.display = "none"; // Hidden by default
+restartTutorialBtn.style.display = "none";
 restartTutorialBtn.style.fontSize = "0.9em";
 
 document.body.appendChild(restartTutorialBtn);
@@ -622,7 +593,7 @@ function resetGame() {
         cell.style.pointerEvents = "auto";
         cell.style.boxShadow = "none";
         cell.classList.remove("X", "O", "highlight", "quantum");
-        cell.classList.add("quantum"); // Re-add quantum animation
+        cell.classList.add("quantum");
         cell.removeEventListener("click", selectClassical);
         cell.removeEventListener("click", selectControl);
         cell.removeEventListener("click", selectTarget);
@@ -642,9 +613,9 @@ function resetGame() {
     `;
     render();
 
-    // Reset tutorial status
+
     localStorage.removeItem("hasSeenTutorial");
-    // Show restart tutorial button
+
     restartTutorialBtn.style.display = "block";
 }
 
@@ -678,22 +649,20 @@ playGameButton.onclick = function () {
     }
 }
 
-// Sound Modal Close (Already in your code)
+// Sound Modal Close
 initialMusicButton.addEventListener("click", () => {
     backgroundMusic.play();
     soundModal.style.display = "none";
     musicToggle.style.display = "block";
 
-    // After sound modal is closed, show rules modal
     rulesModal.style.display = "flex";
 });
 
-// Rules Modal Close Event (Modify to trigger tutorial)
-const rulesModalClose = document.querySelector("#rulesModal .close"); // Ensure correct selector
+// Rules Modal Close Event
+const rulesModalClose = document.querySelector("#rulesModal .close");
 rulesModalClose.onclick = function () {
     rulesModal.style.display = "none";
-    // Start the tutorial after closing the rules modal
-    // Check if the tutorial has already been run
+
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
     if (hasSeenTutorial !== "false") {
         restartTutorialBtn.style.display = "block";
@@ -704,7 +673,7 @@ rulesModalClose.onclick = function () {
 
 };
 
-// Optional: If rules modal can be closed by clicking outside, ensure tutorial starts
+// If rules modal can be closed by clicking outside, ensure tutorial starts
 window.onclick = function (event) {
     if (event.target == rulesModal) {
         rulesModal.style.display = "none";
@@ -721,11 +690,9 @@ window.onclick = function (event) {
 // === Adjust Initial Load to Show Sound and Then Rules Modal ===
 
 window.addEventListener("load", () => {
-    // soundModal.style.display = "flex";
     localStorage.setItem("hasSeenTutorial", "false");
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
     if (hasSeenTutorial === "false") {
-        // Show sound modal
         soundModal.style.display = "flex";
     }
 });

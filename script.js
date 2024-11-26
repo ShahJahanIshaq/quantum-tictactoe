@@ -658,7 +658,7 @@ initialMusicButton.addEventListener("click", () => {
     backgroundMusic.play();
     soundModal.style.display = "none";
     musicToggle.style.display = "block";
-
+    localStorage.setItem("soundEnabled", "true");
     rulesModal.style.display = "flex";
 });
 
@@ -694,6 +694,13 @@ window.onclick = function (event) {
 // === Adjust Initial Load to Show Sound and Then Rules Modal ===
 
 window.addEventListener("load", () => {
+    const soundEnabled = localStorage.getItem("soundEnabled");
+    if (soundEnabled !== "true") {
+        soundModal.style.display = "flex";
+    } else {
+        musicToggle.style.display = "block";
+        backgroundMusic.play();
+    }
     localStorage.setItem("hasSeenTutorial", "false");
     const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
     if (hasSeenTutorial === "false") {
@@ -713,6 +720,11 @@ musicToggle.addEventListener("click", () => {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    backgroundMusic.load(); // Preloads the audio
+});
+
 // Initial Render
 message = "Welcome to the game! Choose a move.";
+soundModal.style.display = "none";
 render();
